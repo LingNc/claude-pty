@@ -1,6 +1,6 @@
 import { defineTool } from 'claude-code/plugin'
+import { manager } from '../pty/manager.js'
 import { lifecycleManager } from '../pty/session-lifecycle.js'
-import { outputManager } from '../pty/output-manager.js'
 import { checkCommandPermission } from '../permissions.js'
 
 // Escape sequence characters
@@ -121,7 +121,7 @@ Examples:
       }
     }
 
-    const success = outputManager.write(session, parsedData)
+    const success = manager.write(args.id, parsedData)
 
     if (!success) {
       throw new Error(`Failed to write to session '${args.id}'`)

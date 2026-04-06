@@ -1,5 +1,5 @@
 import { defineTool } from 'claude-code/plugin'
-import { lifecycleManager } from '../pty/session-lifecycle.js'
+import { manager } from '../pty/manager.js'
 import { checkCommandPermission, checkWorkdirPermission } from '../permissions.js'
 import type { PTYSessionInfo } from '../pty/types.js'
 
@@ -114,26 +114,22 @@ instead of polling with \`pty_read\`.
       await checkWorkdirPermission(args.workdir)
     }
 
-    const session = lifecycleManager.spawn(
-      {
-        command: args.command,
-        args: args.args || [],
-        workdir: args.workdir,
-        env: args.env as Record<string, string>,
-        title: args.title,
-        description: args.description,
-        parentSessionId: context.sessionId || 'default',
-        parentAgent: context.agent,
-        notifyOnExit: args.notifyOnExit ?? false,
-      },
-      (_session, _data) => {
-        // Data callback - handled by internal manager
-      },
-      (_session, _exitCode) => {
-        // Exit callback - handled by internal manager
-        // TODO: Send notification when T11 is implemented
-      }
-    )
+    // Set notify function if available (for exit notifications)
+    if (context.notify) {
+      manager.setNotifyFn(context.notify)
+    }
+
+    const session = manager.spawn({
+      command: args.command,
+      args: args.args || [],
+      workdir: args.workdir,
+      env: args.env as Record<string, string>,
+      title: args.title,
+      description: args.description,
+      parentSessionId: context.sessionId || 'default',
+      parentAgent: context.agent,
+      notifyOnExit: args.notifyOnExit ?? false,
+    })
 
     return formatSpawnOutput(session)
   },

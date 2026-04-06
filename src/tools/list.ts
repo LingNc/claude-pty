@@ -1,5 +1,5 @@
 import { defineTool } from 'claude-code/plugin'
-import { lifecycleManager } from '../pty/session-lifecycle.js'
+import { manager } from '../pty/manager.js'
 import type { PTYSessionInfo } from '../pty/types.js'
 
 function formatSessionInfo(session: PTYSessionInfo): string[] {
@@ -43,7 +43,7 @@ Tips:
 - This allows you to compare output from multiple sessions`,
   parameters: {},
   async execute() {
-    const sessions = lifecycleManager.listSessions().map((s) => lifecycleManager.toInfo(s))
+    const sessions = manager.list()
 
     if (sessions.length === 0) {
       return '<pty_list>\nNo active PTY sessions.\n</pty_list>'

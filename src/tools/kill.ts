@@ -1,4 +1,5 @@
 import { defineTool } from 'claude-code/plugin'
+import { manager } from '../pty/manager.js'
 import { lifecycleManager } from '../pty/session-lifecycle.js'
 
 export const ptyKill = defineTool({
@@ -46,7 +47,7 @@ Examples:
     }
 
     const wasRunning = session.status === 'running'
-    const success = lifecycleManager.kill(args.id, args.cleanup ?? false)
+    const success = manager.kill(args.id, args.cleanup ?? false)
 
     if (!success) {
       throw new Error(`Failed to kill PTY session '${args.id}'`)

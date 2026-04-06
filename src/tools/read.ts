@@ -1,6 +1,6 @@
 import { defineTool } from 'claude-code/plugin'
+import { manager } from '../pty/manager.js'
 import { lifecycleManager } from '../pty/session-lifecycle.js'
-import { outputManager } from '../pty/output-manager.js'
 import type { PTYSessionInfo } from '../pty/types.js'
 
 const DEFAULT_READ_LIMIT = 500
@@ -66,7 +66,7 @@ function handlePlainRead(
     throw new Error(`Session '${session.id}' not found`)
   }
 
-  const result = outputManager.read(ptySession, offset, limit)
+  const result = manager.read(session.id, offset, limit)
 
   if (result.lines.length === 0) {
     return appendNotifyOnExitReminder(
@@ -125,7 +125,7 @@ function handlePatternRead(
     throw new Error(`Session '${session.id}' not found`)
   }
 
-  const result = outputManager.search(ptySession, regex, offset, limit)
+  const result = manager.search(session.id, regex, offset, limit)
 
   if (result.matches.length === 0) {
     return appendNotifyOnExitReminder(
