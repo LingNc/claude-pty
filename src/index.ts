@@ -45,7 +45,7 @@ export default definePlugin({
         title: { type: 'string', description: 'Session title' },
         description: { type: 'string', description: 'Session description' },
       },
-      async execute(params) {
+      async execute(params, context) {
         const session = lifecycleManager.spawn(
           {
             command: params.command,
@@ -54,7 +54,8 @@ export default definePlugin({
             env: params.env,
             title: params.title,
             description: params.description,
-            parentSessionId: 'default',
+            parentSessionId: context.sessionId || 'default',
+            parentAgent: context.agent,
           },
           (s, data) => {
             // Data callback - handled by internal manager
