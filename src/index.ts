@@ -4,6 +4,7 @@ import { ptyWrite } from './tools/write.js'
 import { ptyRead } from './tools/read.js'
 import { ptyKill } from './tools/kill.js'
 import { ptyList } from './tools/list.js'
+import { lifecycleManager } from './pty/session-lifecycle.js'
 
 export default definePlugin({
   name: 'claude-pty',
@@ -31,4 +32,9 @@ export default definePlugin({
   ],
 
   tools: [ptySpawnTool, ptyWrite, ptyRead, ptyKill, ptyList],
+
+  // Session cleanup hook - clean up child PTY sessions when parent session is deleted
+  onSessionDeleted({ sessionId }) {
+    lifecycleManager.cleanupBySession(sessionId)
+  },
 })
