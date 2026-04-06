@@ -1,6 +1,36 @@
-import { spawn, type IPty } from 'bun-pty'
+import { spawn, type IPty, Terminal } from 'bun-pty'
+import { version as bunPtyVersion } from 'bun-pty/package.json'
 import { RingBuffer } from './buffer.js'
 import type { PTYSession, PTYSessionInfo, SpawnOptions } from './types.js'
+
+// Monkey-patch bun-pty to fix race condition in _startReadLoop
+// Temporary workaround until https://github.com/sursaone/bun-pty/pull/37 is merged
+function semverOrder(v1: string, v2: string): number {
+  const parts1 = v1.split('.').map(Number)
+  const parts2 = v2.split('.').map(Number)
+  for (let i = 0; i < Math.max(parts1.length, parts2.length); i++) {
+    const a = parts1[i] || 0
+    const b = parts2[i] || 0
+    if (a !== b) return a - b
+  }
+  return 0
+}
+
+if (semverOrder(bunPtyVersion, '0.4.8') > 0) {
+  throw new Error(
+    `bun-pty version ${bunPtyVersion} is too new for patching; remove the workaround.`
+  )
+}
+
+const proto = Terminal.prototype as unknown as { _startReadLoop?: (...args: unknown[]) => unknown }
+const original = proto._startReadLoop
+
+if (typeof original === 'function') {
+  proto._startReadLoop = async function (this: InstanceType<typeof Terminal>, ...args: unknown[]) {
+    await Promise.resolve() // Yield to allow event handlers to be registered
+    return original.apply(this, args)
+  }
+}
 
 const SESSION_ID_BYTE_LENGTH = 4
 
