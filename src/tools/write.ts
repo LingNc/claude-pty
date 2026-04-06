@@ -1,10 +1,36 @@
 import { defineTool } from 'claude-code/plugin'
 import { lifecycleManager } from '../pty/session-lifecycle.js'
 import { outputManager } from '../pty/output-manager.js'
+import { checkCommandPermission } from '../permissions.js'
 
 // Escape sequence characters
 const ETX = String.fromCharCode(3)   // Ctrl+C
 const EOT = String.fromCharCode(4)   // Ctrl+D
+
+/**
+ * Extract commands from input data for permission checking
+ */
+function extractCommands(data: string): string[] {
+  const commands: string[] = []
+  const lines = data.split(/[\n\r]+/)
+  for (const line of lines) {
+    const trimmed = line.trim()
+    if (trimmed && !trimmed.startsWith(ETX) && !trimmed.startsWith(EOT)) {
+      commands.push(trimmed)
+    }
+  }
+  return commands
+}
+
+/**
+ * Parse a command line into command and args
+ */
+function parseCommand(commandLine: string): { command: string; args: string[] } {
+  const parts = commandLine.split(/\s+/).filter(Boolean)
+  const command = parts[0] ?? ''
+  const args = parts.slice(1)
+  return { command, args }
+}
 
 /**
  * Parse escape sequences in a string to their actual byte values
@@ -85,6 +111,16 @@ Examples:
     }
 
     const parsedData = parseEscapeSequences(args.data)
+
+    // Check permissions for commands being written
+    const commands = extractCommands(parsedData)
+    for (const commandLine of commands) {
+      const { command, args: cmdArgs } = parseCommand(commandLine)
+      if (command) {
+        await checkCommandPermission(command, cmdArgs)
+      }
+    }
+
     const success = outputManager.write(session, parsedData)
 
     if (!success) {

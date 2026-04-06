@@ -52,3 +52,6 @@ export class OutputManager {
     return { matches: paginatedMatches, totalMatches, totalLines, offset, hasMore }
   }
 }
+
+// Export singleton instance
+export const outputManager = new OutputManager()

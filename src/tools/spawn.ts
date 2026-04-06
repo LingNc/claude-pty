@@ -1,5 +1,6 @@
 import { defineTool } from 'claude-code/plugin'
 import { lifecycleManager } from '../pty/session-lifecycle.js'
+import { checkCommandPermission, checkWorkdirPermission } from '../permissions.js'
 import type { PTYSessionInfo } from '../pty/types.js'
 
 const NOTIFY_ON_EXIT_INSTRUCTIONS = [
@@ -105,7 +106,13 @@ instead of polling with \`pty_read\`.
     },
   },
   async execute(args, context) {
-    // TODO: Add permission checks when T11 is implemented
+    // Check command permission
+    await checkCommandPermission(args.command, args.args || [])
+
+    // Check workdir permission if provided
+    if (args.workdir) {
+      await checkWorkdirPermission(args.workdir)
+    }
 
     const session = lifecycleManager.spawn(
       {

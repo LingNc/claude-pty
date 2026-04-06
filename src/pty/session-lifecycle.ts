@@ -251,3 +251,6 @@ export class SessionLifecycleManager {
     }
   }
 }
+
+// Export singleton instance
+export const lifecycleManager = new SessionLifecycleManager()
