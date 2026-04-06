@@ -13,11 +13,13 @@ II. 团队编制与职责分工（5人制）
 5. Tester（测试与同步）：在测试环境中运行 claude（含 dangerous 模式或等效测试配置）验证 PTY 与 MCP 功能，发现异常立即汇报。负责仓库同步管理：以远端代码为基准保持对齐，本地仅做适配验证；若需修改或产生冲突，不直接修改，而是汇总问题上报团队。
 
 III. 核心协作规则与工作流
-1. Git 规范：务必遵守 docs/ 中的 GIT.md 规则，可以结合本项目微调细节。所有 commit 信息必须尽可能简略，严禁附带 Co-authored-by 等任何作者署名信息。
-2. 分支与文档策略：所有开发、测试与文档（docs/ 目录，包括 AGENTS.md）仅存在于 dev（开发）分支。main 分支保持纯净，合并进 main 时应该剔除 docs/ 和 AGENTS.md。
+1. Git 规范：务必遵守 docs/ 中的 GIT.md 规则，可以结合本项目微调细节。所有 commit 信息必须尽可能简略，严禁附带 Co-authored-by 等任何作者署名信息。并且 Leader 和 Coder 应注意及时提交，完成一个任务就提交git。
+2. 分支与文档策略：所有开发、测试与文档（docs/ 目录，包括 AGENTS.md）仅存在于 dev（开发）分支。main 分支保持纯净，合并进 main 时应该剔除 docs/, AGENTS.md 和 CLAUDE.md。
 3. 全局记忆机制：在项目根目录创建 AGENTS.md，动态记录项目架构、已确认规则、迁移进度、环境配置与 Git 规范，作为团队持续读取与更新的全局上下文。
-4. 协作流转机制：Leader 接收指令并分配 -> Analyst 完成分析与拆解 -> Coder 执行编码 -> Reviewer 审计验证 -> Tester 环境测试与同步校验。各角色发现问题需立即记录至 AGENTS.md 并同步 Leader，遇关键决策暂停等待指令。
-5. 维护：AGENTS.md 不宜超过200行，当比较大的时候 Analyst 需要进行拆分和内容引用。
+4. 协作流转机制：Leader 接收指令并分配 -> Analyst 完成分析与拆解 -> Coder 执行编码 -> Reviewer 审计验证 -> Tester 环境测试与同步校验。各角色发现问题需立即记录至 AGENTS.md 并同步 Leader，遇关键决策暂停等待指令。并且所有团队成员严格听从 Leader 指挥，不可擅自行事。且各成员不可越权操作、或完成非自己的任务。各成员不可着急行事。
+5. 效率：若成员任务繁重可以申请拆分任务重新规划或者申请使用 subagent，但该操作需要向 Leader 申请并审核通过方可使用。每个成员 subagent 使用数量不得超过 2 个。
+6. 沟通：各成员间如有疑问或信息可相互交流，同步信息，避免擅自行事，相互确认一致行事。
+7. 维护：AGENTS.md 不宜超过200行，当比较大的时候 Analyst 需要进行拆分和内容引用。
 
 IV. 启动执行指令
 1. 打印 4 个角色的初始化状态与就绪确认。
@@ -30,4 +32,4 @@ V. 用户使用
 1. 通过添加 marketplace 并安装插件(参考官网: https://code.claude.com/docs/zh-CN/plugin-marketplaces)。
 2. 仓库地址：https://github.com/LingNc/claude-pty.git。
 
-请立即按上述要求初始化团队并执行第一步操作，输出你的初始行动方案、AGENTS.md 草案以及 Analyst 的迁移影响分析与任务清单。
+请立即按上述要求初始化团队并执行第一步操作，输出你的初始行动方案、AGENTS.md 草案并开始指派 Analyst 的迁移影响分析与任务清单。
