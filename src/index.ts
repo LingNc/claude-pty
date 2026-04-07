@@ -5,6 +5,7 @@ import { ptyRead } from './tools/read.js'
 import { ptyKill } from './tools/kill.js'
 import { ptyList } from './tools/list.js'
 import { manager } from './pty/manager.js'
+import { ptyOpenCommand, ptyShowUrlCommand } from './commands/pty-open.js'
 
 export default definePlugin({
   name: 'claude-pty',
@@ -32,6 +33,8 @@ export default definePlugin({
   ],
 
   tools: [ptySpawnTool, ptyWrite, ptyRead, ptyKill, ptyList],
+
+  commands: [ptyOpenCommand, ptyShowUrlCommand],
 
   // Session cleanup hook - clean up child PTY sessions when parent session is deleted
   onSessionDeleted({ sessionId }) {
