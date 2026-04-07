@@ -1,5 +1,8 @@
 {
   "name": "claude-pty",
   "version": "0.1.0",
-  "description": "PTY终端集成插件 for Claude Code"
+  "description": "PTY终端集成插件 - 提供spawn/read/write/kill/list等终端操作",
+  "license": "MIT",
+  "keywords": ["pty", "terminal", "shell"],
+  "repository": "https://github.com/LingNc/claude-pty"
 }
