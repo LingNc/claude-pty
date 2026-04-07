@@ -10,9 +10,15 @@
     "test": "jest"
   },
   "dependencies": {
-    "bun-pty": "^0.4.8"
+    "@xterm/addon-fit": "^0.11.0",
+    "@xterm/addon-serialize": "^0.14.0",
+    "@xterm/xterm": "^6.0.0",
+    "bun-pty": "^0.4.8",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
   },
   "devDependencies": {
+    "@playwright/test": "^1.59.1",
     "@types/bun": "latest",
     "@types/jest": "^30.0.0",
     "jest": "^30.3.0",

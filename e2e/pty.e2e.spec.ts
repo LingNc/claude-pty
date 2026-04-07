@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
-import { PTYServer } from '../../src/web/server/server.js'
-import { manager } from '../../src/pty/manager.js'
+import { PTYServer } from '../src/web/server/server.js'
+import { manager } from '../src/pty/manager.js'
 
 let server: PTYServer | null = null
 let serverUrl: string = ''
