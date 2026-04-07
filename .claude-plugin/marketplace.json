@@ -1,0 +1,4 @@
+{
+  "name": "claude-pty",
+  "plugins": ["claude-pty"]
+}

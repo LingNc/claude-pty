@@ -1,0 +1,5 @@
+{
+  "name": "claude-pty",
+  "version": "0.1.0",
+  "description": "PTY终端集成插件 for Claude Code"
+}
