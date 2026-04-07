@@ -1,0 +1,26 @@
+{
+  "name": "claude-pty",
+  "version": "0.1.0",
+  "description": "PTY terminal integration for Claude Code",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "jest"
+  },
+  "dependencies": {
+    "bun-pty": "^0.4.8"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/jest": "^30.0.0",
+    "jest": "^30.3.0",
+    "ts-jest": "^29.4.9",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.0.0"
+  },
+  "peerDependencies": {
+    "claude-code": ">=1.0.0"
+  }
+}
