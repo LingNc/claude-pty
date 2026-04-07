@@ -7,7 +7,7 @@ PTY终端集成插件
 ### 1. 添加插件市场
 在Claude Code中运行：
 ```
-/plugin marketplace add github/LingNc/claude-pty
+/plugin marketplace add https://github.com/LingNc/claude-pty
 ```
 
 ### 2. 安装插件
