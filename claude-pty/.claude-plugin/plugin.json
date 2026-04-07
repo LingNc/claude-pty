@@ -1,8 +1,30 @@
 {
   "name": "claude-pty",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "PTY终端集成插件 - 提供spawn/read/write/kill/list等终端操作",
   "license": "MIT",
   "keywords": ["pty", "terminal", "shell"],
-  "repository": "https://github.com/LingNc/claude-pty"
+  "repository": "https://github.com/LingNc/claude-pty",
+  "commands": [
+    {
+      "name": "pty_spawn",
+      "description": "创建新的PTY终端会话"
+    },
+    {
+      "name": "pty_read",
+      "description": "读取PTY会话输出"
+    },
+    {
+      "name": "pty_write",
+      "description": "向PTY会话发送输入"
+    },
+    {
+      "name": "pty_list",
+      "description": "列出所有活跃的PTY会话"
+    },
+    {
+      "name": "pty_kill",
+      "description": "终止PTY会话"
+    }
+  ]
 }
