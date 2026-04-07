@@ -1,4 +1,3 @@
-import { describe, it, expect } from 'bun:test'
 import { OutputManager } from '../src/pty/output-manager.js'
 import { RingBuffer } from '../src/pty/buffer.js'
 import type { PTYSession } from '../src/pty/types.js'
