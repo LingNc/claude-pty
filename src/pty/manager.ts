@@ -15,6 +15,76 @@ import type {
 export type NotifyFn = (message: string) => void
 
 /**
+ * Callback types for session events
+ */
+export type SessionUpdateCallback = (session: PTYSessionInfo) => void
+export type RawOutputCallback = (session: PTYSessionInfo, rawData: string) => void
+
+// Global callback arrays
+const sessionUpdateCallbacks: SessionUpdateCallback[] = []
+const rawOutputCallbacks: RawOutputCallback[] = []
+
+/**
+ * Register a callback for session update events
+ */
+export function registerSessionUpdateCallback(callback: SessionUpdateCallback): void {
+  sessionUpdateCallbacks.push(callback)
+}
+
+/**
+ * Remove a session update callback
+ */
+export function removeSessionUpdateCallback(callback: SessionUpdateCallback): void {
+  const index = sessionUpdateCallbacks.indexOf(callback)
+  if (index !== -1) {
+    sessionUpdateCallbacks.splice(index, 1)
+  }
+}
+
+/**
+ * Register a callback for raw output events
+ */
+export function registerRawOutputCallback(callback: RawOutputCallback): void {
+  rawOutputCallbacks.push(callback)
+}
+
+/**
+ * Remove a raw output callback
+ */
+export function removeRawOutputCallback(callback: RawOutputCallback): void {
+  const index = rawOutputCallbacks.indexOf(callback)
+  if (index !== -1) {
+    rawOutputCallbacks.splice(index, 1)
+  }
+}
+
+/**
+ * Notify all registered session update callbacks
+ */
+function notifySessionUpdate(session: PTYSessionInfo): void {
+  for (const callback of sessionUpdateCallbacks) {
+    try {
+      callback(session)
+    } catch {
+      // Ignore callback errors
+    }
+  }
+}
+
+/**
+ * Notify all registered raw output callbacks
+ */
+function notifyRawOutput(session: PTYSessionInfo, rawData: string): void {
+  for (const callback of rawOutputCallbacks) {
+    try {
+      callback(session, rawData)
+    } catch {
+      // Ignore callback errors
+    }
+  }
+}
+
+/**
  * PTY Manager - Central coordinator for all PTY operations
  * Integrates lifecycle, notification, and output management
  */
@@ -35,16 +105,20 @@ class PTYManager {
   spawn(opts: SpawnOptions): PTYSessionInfo {
     const session = lifecycleManager.spawn(
       opts,
-      (_session, _data) => {
-        // Data callback - currently no-op, buffer handles data storage
+      (session, data) => {
+        // Data callback - notify raw output subscribers
+        notifyRawOutput(lifecycleManager.toInfo(session), data)
       },
       (session, exitCode) => {
         // Exit callback - send notification if requested
+        const sessionInfo = lifecycleManager.toInfo(session)
+        notifySessionUpdate(sessionInfo)
         if (session.notifyOnExit && this.notifyFn) {
           notificationManager.sendExitNotification(session, exitCode || 0, this.notifyFn)
         }
       }
     )
+    notifySessionUpdate(session)
     return session
   }
 
@@ -97,6 +171,20 @@ class PTYManager {
       return null
     }
     return lifecycleManager.toInfo(session)
+  }
+
+  /**
+   * Get raw buffer content for a session
+   */
+  getRawBuffer(id: string): { raw: string; byteLength: number } | null {
+    const session = lifecycleManager.getSession(id)
+    if (!session) {
+      return null
+    }
+    return {
+      raw: session.buffer.readRaw(),
+      byteLength: session.buffer.byteLength,
+    }
   }
 
   /**
