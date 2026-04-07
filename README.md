@@ -2,7 +2,7 @@
 
 PTY终端集成插件 for Claude Code
 
-## 快速开始
+## 安装
 
 ### 1. 添加插件市场
 在Claude Code中运行：
@@ -14,30 +14,6 @@ PTY终端集成插件 for Claude Code
 ```
 /plugin install claude-pty/claude-pty
 ```
-
-### 3. 或使用settings.json配置
-在`~/.claude/settings.json`中添加：
-```json
-{
-  "extraKnownMarketplaces": {
-    "claude-pty": {
-      "source": {
-        "source": "github",
-        "repo": "LingNc/claude-pty"
-      }
-    }
-  }
-}
-```
-然后运行：`/plugin install claude-pty/claude-pty`
-
-## 安装
-
-通过Claude Code插件市场安装：
-1. 打开Claude Code
-2. 进入设置 → 插件市场
-3. 添加仓库：`https://github.com/LingNc/claude-pty.git`
-4. 安装插件
 
 ## 使用
 
