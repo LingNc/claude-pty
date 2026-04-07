@@ -2,7 +2,7 @@
 node_modules/
 
 # Build outputs
-dist/
+# dist/  # 插件需要提交dist目录
 *.tsbuildinfo
 
 # Test outputs
