@@ -7,7 +7,9 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
-    "test": "jest"
+    "test": "jest",
+    "test:integration": "bun test test/integration",
+    "test:e2e": "bun playwright test e2e/e2e"
   },
   "dependencies": {
     "@xterm/addon-fit": "^0.11.0",
