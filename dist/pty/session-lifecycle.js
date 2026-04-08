@@ -1,5 +1,6 @@
 import { spawn, Terminal } from 'bun-pty';
-import { version as bunPtyVersion } from 'bun-pty/package.json';
+import bunPtyPackage from 'bun-pty/package.json' with { type: 'json' };
+const bunPtyVersion = bunPtyPackage.version;
 import { RingBuffer } from './buffer.js';
 // Monkey-patch bun-pty to fix race condition in _startReadLoop
 // Temporary workaround until https://github.com/sursaone/bun-pty/pull/37 is merged
@@ -103,7 +104,7 @@ export class SessionLifecycleManager {
             else {
                 session.status = 'exited';
             }
-            session.exitCode = exitCode;
+            session.exitCode = exitCode ?? undefined;
             session.exitSignal = signal;
             onExit(session, exitCode);
         });
