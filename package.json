@@ -8,6 +8,14 @@
     ".": "./dist/index.js",
     "./mcp": "./mcp/dist/server.js"
   },
+  "files": [
+    "dist/",
+    "mcp/dist/",
+    "mcp/package.json",
+    "mcp/README.md",
+    ".claude-plugin/",
+    "README.md"
+  ],
   "bin": {
     "claude-pty-mcp": "./mcp/dist/server.js"
   },
