@@ -2,6 +2,7 @@
 
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { registerTools } from './tools/index.js';
 
 // 服务器配置
 const SERVER_NAME = 'claude-pty-mcp';
@@ -24,9 +25,8 @@ async function main() {
     }
   );
 
-  // TODO: 注册工具 (T9将在此处集成)
-  // import { registerTools } from './tools/index.js';
-  // registerTools(server);
+  // 注册所有PTY工具
+  registerTools(server);
 
   // 创建stdio传输层
   const transport = new StdioServerTransport();
