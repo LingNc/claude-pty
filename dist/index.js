@@ -1,7 +1,7 @@
 import { definePlugin, defineSetting } from 'claude-code/plugin';
 import { spawn } from 'child_process';
 import { resolve, join } from 'path';
-import { existsSync, writeFileSync, mkdirSync, appendFileSync, statSync, readdirSync, unlinkSync } from 'fs';
+import { existsSync, writeFileSync, mkdirSync, appendFileSync, statSync, readdirSync, unlinkSync, watch } from 'fs';
 import { homedir } from 'os';
 import { ptySpawnTool } from './tools/spawn.js';
 import { ptyWrite } from './tools/write.js';
@@ -15,10 +15,13 @@ let mcpProcess = null;
 let restartCount = 0;
 const MAX_RESTARTS = 3;
 let restartTimer = null;
+// File watcher for hot reload
+let configWatcher = null;
 // Log configuration
 const LOG_DIR = join(homedir(), '.claude-pty', 'logs');
 const LOG_FILE = join(LOG_DIR, 'mcp.log');
 const MAX_LOG_DAYS = 7;
+const MCP_CONFIG_PATH = join(homedir(), '.config', 'claude', 'mcp.json');
 /**
  * Initialize log directory
  */
@@ -219,14 +222,68 @@ function generateMCPConfig() {
     }
 }
 /**
+ * User notification with emoji status
+ */
+function notifyUser(context, status, message, suggestion) {
+    const icons = {
+        success: '✅',
+        warning: '⚠️',
+        error: '❌',
+    };
+    const fullMessage = suggestion
+        ? `${icons[status]} ${message}\n💡 ${suggestion}`
+        : `${icons[status]} ${message}`;
+    console.error(`[Plugin] ${fullMessage}`);
+    if (context.notify) {
+        context.notify(fullMessage);
+    }
+}
+/**
+ * Setup config file watcher for hot reload
+ */
+function setupConfigWatcher(context) {
+    if (!existsSync(MCP_CONFIG_PATH))
+        return;
+    try {
+        configWatcher = watch(MCP_CONFIG_PATH, (eventType) => {
+            if (eventType === 'change') {
+                log('INFO', 'MCP config file changed, reloading...');
+                notifyUser(context, 'warning', 'MCP configuration changed', 'Restarting MCP server...');
+                // Stop and restart
+                stopMCPServer();
+                setTimeout(() => {
+                    setupMCP(context);
+                }, 1000);
+            }
+        });
+        log('INFO', `Watching config: ${MCP_CONFIG_PATH}`);
+    }
+    catch (err) {
+        log('ERROR', `Failed to setup config watcher: ${err}`);
+    }
+}
+/**
+ * Cleanup config watcher
+ */
+function cleanupConfigWatcher() {
+    if (configWatcher) {
+        configWatcher.close();
+        configWatcher = null;
+        log('INFO', 'Config watcher stopped');
+    }
+}
+/**
  * Try to register MCP server via API or fallback to config
  */
 async function setupMCP(context) {
     initLogDir();
     log('INFO', 'Setting up MCP server...');
+    // Setup config watcher for hot reload
+    setupConfigWatcher(context);
     mcpProcess = startMCPServer();
     if (!mcpProcess) {
         log('ERROR', 'Failed to start server, trying config fallback...');
+        notifyUser(context, 'error', 'MCP server failed to start', 'Check logs at ~/.claude-pty/logs/mcp.log');
         return generateMCPConfig();
     }
     // Try API registration
@@ -238,17 +295,22 @@ async function setupMCP(context) {
             });
             log('INFO', 'Registered via API');
             resetRestartCounter();
+            notifyUser(context, 'success', 'MCP server started and registered');
             return true;
         }
         catch (err) {
             log('ERROR', `API registration failed: ${err}`);
+            notifyUser(context, 'warning', 'MCP server started but API registration failed', 'Using config file fallback');
         }
     }
     // Fallback: generate config file
     log('INFO', 'API not available, using config file...');
     const configOk = generateMCPConfig();
-    if (configOk && context.notify) {
-        context.notify('MCP server configured. Please restart Claude Code to activate.');
+    if (configOk) {
+        notifyUser(context, 'warning', 'MCP server configured via config file', 'Please restart Claude Code to activate');
+    }
+    else {
+        notifyUser(context, 'error', 'Failed to configure MCP server', 'Check file permissions for ~/.config/claude/');
     }
     return configOk;
 }
@@ -291,6 +353,7 @@ export default definePlugin({
     onUnload() {
         console.error('[Plugin] claude-pty unloading...');
         stopMCPServer();
+        cleanupConfigWatcher();
         console.error('[Plugin] claude-pty unloaded');
     },
     onSessionDeleted({ sessionId }) {
