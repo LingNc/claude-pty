@@ -1,7 +1,8 @@
 import { definePlugin, defineSetting } from 'claude-code/plugin';
 import { spawn } from 'child_process';
 import { resolve, join } from 'path';
-import { existsSync, writeFileSync, mkdirSync, homedir } from 'fs';
+import { existsSync, writeFileSync, mkdirSync } from 'fs';
+import { homedir } from 'os';
 import { ptySpawnTool } from './tools/spawn.js';
 import { ptyWrite } from './tools/write.js';
 import { ptyRead } from './tools/read.js';
@@ -28,7 +29,7 @@ function startMCPServer() {
             return null;
         }
         console.error('[MCP] Starting server from:', mcpPath);
-        const proc = spawn('node', [mcpPath], {
+        const proc = spawn('bun', [mcpPath], {
             stdio: ['pipe', 'pipe', 'pipe'],
             detached: false,
         });
@@ -88,7 +89,7 @@ function generateMCPConfig() {
         // Add/update claude-pty MCP server
         config.mcpServers = config.mcpServers || {};
         config.mcpServers['claude-pty'] = {
-            command: 'node',
+            command: 'bun',
             args: [mcpPath],
             description: 'PTY terminal integration for Claude Code',
         };
