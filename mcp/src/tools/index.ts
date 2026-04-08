@@ -1,4 +1,4 @@
-import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 
 // Import all tool schemas, descriptions, and execute functions
@@ -40,45 +40,50 @@ import {
 /**
  * Register all PTY tools with the MCP server
  */
-export function registerTools(server: Server) {
+export function registerTools(server: McpServer) {
   // pty_spawn - Create new PTY session
-  server.registerTool({
-    name: 'pty_spawn',
+  server.registerTool('pty_spawn', {
     description: ptySpawnDescription,
-    parameters: ptySpawnSchema as unknown as z.ZodType<PTYSpawnArgs>,
-    execute: executePTYSpawn,
+    inputSchema: ptySpawnSchema as unknown as z.ZodType<PTYSpawnArgs>,
+  }, async (args) => {
+    const result = await executePTYSpawn(args);
+    return { content: [{ type: 'text', text: result }] };
   });
 
   // pty_read - Read output from PTY session
-  server.registerTool({
-    name: 'pty_read',
+  server.registerTool('pty_read', {
     description: ptyReadDescription,
-    parameters: ptyReadSchema as unknown as z.ZodType<PTYReadArgs>,
-    execute: executePTYRead,
+    inputSchema: ptyReadSchema as unknown as z.ZodType<PTYReadArgs>,
+  }, async (args) => {
+    const result = await executePTYRead(args);
+    return { content: [{ type: 'text', text: result }] };
   });
 
   // pty_write - Send input to PTY session
-  server.registerTool({
-    name: 'pty_write',
+  server.registerTool('pty_write', {
     description: ptyWriteDescription,
-    parameters: ptyWriteSchema as unknown as z.ZodType<PTYWriteArgs>,
-    execute: executePTYWrite,
+    inputSchema: ptyWriteSchema as unknown as z.ZodType<PTYWriteArgs>,
+  }, async (args) => {
+    const result = await executePTYWrite(args);
+    return { content: [{ type: 'text', text: result }] };
   });
 
   // pty_kill - Terminate PTY session
-  server.registerTool({
-    name: 'pty_kill',
+  server.registerTool('pty_kill', {
     description: ptyKillDescription,
-    parameters: ptyKillSchema as unknown as z.ZodType<PTYKillArgs>,
-    execute: executePTYKill,
+    inputSchema: ptyKillSchema as unknown as z.ZodType<PTYKillArgs>,
+  }, async (args) => {
+    const result = await executePTYKill(args);
+    return { content: [{ type: 'text', text: result }] };
   });
 
   // pty_list - List all PTY sessions
-  server.registerTool({
-    name: 'pty_list',
+  server.registerTool('pty_list', {
     description: ptyListDescription,
-    parameters: ptyListSchema as unknown as z.ZodType<PTYListArgs>,
-    execute: executePTYList,
+    inputSchema: ptyListSchema as unknown as z.ZodType<PTYListArgs>,
+  }, async (args) => {
+    const result = await executePTYList(args);
+    return { content: [{ type: 'text', text: result }] };
   });
 
   console.error('Registered 5 PTY tools: pty_spawn, pty_read, pty_write, pty_kill, pty_list');

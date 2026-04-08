@@ -1,17 +1,13 @@
 import { z } from 'zod';
 import { manager } from '../shared/manager.js';
 import { lifecycleManager } from '../pty/session-lifecycle.js';
-
 /**
  * pty_kill tool parameters schema
  */
 export const ptyKillSchema = z.object({
-  id: z.string().describe('The PTY session ID'),
-  cleanup: z.boolean().optional().default(false).describe('If true, removes the session and frees the buffer'),
+    id: z.string().describe('The PTY session ID'),
+    cleanup: z.boolean().optional().default(false).describe('If true, removes the session and frees the buffer'),
 });
-
-export type PTYKillArgs = z.infer<typeof ptyKillSchema>;
-
 /**
  * pty_kill tool description
  */
@@ -40,23 +36,21 @@ Tips:
 Examples:
 - Kill but keep logs: cleanup=false (or omit)
 - Kill and remove: cleanup=true`;
-
 /**
  * Execute pty_kill tool
  */
-export async function executePTYKill(args: PTYKillArgs): Promise<string> {
-  const session = lifecycleManager.getSession(args.id);
-  if (!session) {
-    throw new Error(`Session '${args.id}' not found`);
-  }
-
-  const wasRunning = session.status === 'running';
-  const success = manager.kill(args.id, args.cleanup ?? false);
-
-  if (!success) {
-    throw new Error(`Failed to kill PTY session '${args.id}'`);
-  }
-  const action = wasRunning ? 'Killed' : 'Cleaned up';
-  const cleanupNote = args.cleanup ? ' (session removed)' : ' (session retained for log access)';
-  return `${action}: ${args.id}${cleanupNote}`;
+export async function executePTYKill(args) {
+    const session = lifecycleManager.getSession(args.id);
+    if (!session) {
+        throw new Error(`Session '${args.id}' not found`);
+    }
+    const wasRunning = session.status === 'running';
+    const success = manager.kill(args.id, args.cleanup ?? false);
+    if (!success) {
+        throw new Error(`Failed to kill PTY session '${args.id}'`);
+    }
+    const action = wasRunning ? 'Killed' : 'Cleaned up';
+    const cleanupNote = args.cleanup ? ' (session removed)' : ' (session retained for log access)';
+    return `${action}: ${args.id}${cleanupNote}`;
 }
+//# sourceMappingURL=kill.js.map

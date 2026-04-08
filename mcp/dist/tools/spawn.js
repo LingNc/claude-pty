@@ -1,50 +1,43 @@
 import { z } from 'zod';
 import { manager } from '../shared/manager.js';
-import type { PTYSessionInfo } from '../pty/types.js';
-
 const NOTIFY_ON_EXIT_INSTRUCTIONS = [
-  `<system_reminder>`,
-  `Completion signal for this session is the future \`<pty_exited>\` message.`,
-  `If you only need to know whether the command finished, do not call \`pty_read\`; wait for \`<pty_exited>\`.`,
-  `Never use sleep plus \`pty_read\` loops to check completion for this session.`,
-  `Call \`pty_read\` before exit only if you need live output now, the user explicitly asks for logs, or the exit notification reports a non-zero status and you need to investigate.`,
-  `</system_reminder>`,
+    `<system_reminder>`,
+    `Completion signal for this session is the future \`<pty_exited>\` message.`,
+    `If you only need to know whether the command finished, do not call \`pty_read\`; wait for \`<pty_exited>\`.`,
+    `Never use sleep plus \`pty_read\` loops to check completion for this session.`,
+    `Call \`pty_read\` before exit only if you need live output now, the user explicitly asks for logs, or the exit notification reports a non-zero status and you need to investigate.`,
+    `</system_reminder>`,
 ].join('\n');
-
 /**
  * Format spawn output with XML tags
  */
-function formatSpawnOutput(info: PTYSessionInfo): string {
-  const output = [
-    `<pty_spawned>`,
-    `ID: ${info.id}`,
-    `Title: ${info.title}`,
-    `Command: ${info.command} ${info.args.join(' ')}`,
-    `Workdir: ${info.workdir}`,
-    `PID: ${info.pid}`,
-    `Status: ${info.status}`,
-    `NotifyOnExit: ${info.notifyOnExit}`,
-    `</pty_spawned>`,
-    ...(info.notifyOnExit ? ['', NOTIFY_ON_EXIT_INSTRUCTIONS] : []),
-  ];
-  return output.join('\n');
+function formatSpawnOutput(info) {
+    const output = [
+        `<pty_spawned>`,
+        `ID: ${info.id}`,
+        `Title: ${info.title}`,
+        `Command: ${info.command} ${info.args.join(' ')}`,
+        `Workdir: ${info.workdir}`,
+        `PID: ${info.pid}`,
+        `Status: ${info.status}`,
+        `NotifyOnExit: ${info.notifyOnExit}`,
+        `</pty_spawned>`,
+        ...(info.notifyOnExit ? ['', NOTIFY_ON_EXIT_INSTRUCTIONS] : []),
+    ];
+    return output.join('\n');
 }
-
 /**
  * pty_spawn tool parameters schema
  */
 export const ptySpawnSchema = z.object({
-  command: z.string().describe('The command/executable to run'),
-  args: z.array(z.string()).optional().describe('Arguments to pass to the command'),
-  workdir: z.string().optional().describe('Working directory for the PTY session'),
-  env: z.record(z.string()).optional().describe('Additional environment variables'),
-  title: z.string().optional().describe('Human-readable title for the session'),
-  description: z.string().describe('Clear, concise description of what this PTY session is for in 5-10 words'),
-  notifyOnExit: z.boolean().optional().default(false).describe('If true, logs exit info to stderr when the process exits (default: false)'),
+    command: z.string().describe('The command/executable to run'),
+    args: z.array(z.string()).optional().describe('Arguments to pass to the command'),
+    workdir: z.string().optional().describe('Working directory for the PTY session'),
+    env: z.record(z.string()).optional().describe('Additional environment variables'),
+    title: z.string().optional().describe('Human-readable title for the session'),
+    description: z.string().describe('Clear, concise description of what this PTY session is for in 5-10 words'),
+    notifyOnExit: z.boolean().optional().default(false).describe('If true, logs exit info to stderr when the process exits (default: false)'),
 });
-
-export type PTYSpawnArgs = z.infer<typeof ptySpawnSchema>;
-
 /**
  * pty_spawn tool description
  */
@@ -89,26 +82,24 @@ instead of polling with \`pty_read\`.
 - If you only need to know whether the command finished, do not call \`pty_read\`; wait for \`<pty_exited>\`
 - Never use sleep plus \`pty_read\` loops to check completion
 - Use \`pty_read\` before exit only if you need live output now, the user explicitly asks for logs, or the exit notification reports a non-zero status and you need to investigate`;
-
 /**
  * Execute pty_spawn tool
  */
-export async function executePTYSpawn(args: PTYSpawnArgs): Promise<string> {
-  // In MCP, we don't have context.sessionId or context.agent
-  // Use default values for MCP environment
-  const session = manager.spawn({
-    command: args.command,
-    args: args.args || [],
-    workdir: args.workdir,
-    env: args.env,
-    title: args.title,
-    description: args.description,
-    parentSessionId: 'mcp-session',
-    parentAgent: 'mcp-server',
-    notifyOnExit: args.notifyOnExit ?? false,
-  });
-
-  // In MCP, exit notifications are sent via stderr (see shared/manager.ts)
-
-  return formatSpawnOutput(session);
+export async function executePTYSpawn(args) {
+    // In MCP, we don't have context.sessionId or context.agent
+    // Use default values for MCP environment
+    const session = manager.spawn({
+        command: args.command,
+        args: args.args || [],
+        workdir: args.workdir,
+        env: args.env,
+        title: args.title,
+        description: args.description,
+        parentSessionId: 'mcp-session',
+        parentAgent: 'mcp-server',
+        notifyOnExit: args.notifyOnExit ?? false,
+    });
+    // In MCP, exit notifications are sent via stderr (see shared/manager.ts)
+    return formatSpawnOutput(session);
 }
+//# sourceMappingURL=spawn.js.map

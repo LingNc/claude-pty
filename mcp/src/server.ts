@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { registerTools } from './tools/index.js';
 
@@ -13,7 +13,7 @@ const SERVER_VERSION = '0.1.0';
  */
 async function main() {
   // 创建MCP服务器实例
-  const server = new Server(
+  const server = new McpServer(
     {
       name: SERVER_NAME,
       version: SERVER_VERSION,

@@ -1,0 +1,1 @@
+{"version":3,"file":"notification-manager.d.ts","sourceRoot":"","sources":["../../src/shared/notification-manager.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,UAAU,EAAE,MAAM,iBAAiB,CAAC;AAGlD;;;;GAIG;AACH,qBAAa,mBAAmB;IAC9B;;;OAGG;IACG,oBAAoB,CACxB,OAAO,EAAE,UAAU,EACnB,QAAQ,EAAE,MAAM,GACf,OAAO,CAAC,IAAI,CAAC;IAUhB,OAAO,CAAC,qBAAqB;CA4C9B;AAED,eAAO,MAAM,mBAAmB,qBAA4B,CAAC"}

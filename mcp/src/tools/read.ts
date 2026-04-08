@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { manager } from '../pty/manager.js';
+import { manager } from '../shared/manager.js';
 import { lifecycleManager } from '../pty/session-lifecycle.js';
 import type { PTYSessionInfo } from '../pty/types.js';
 

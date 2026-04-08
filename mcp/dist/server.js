@@ -1,6 +1,7 @@
 #!/usr/bin/env node
-import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { registerTools } from './tools/index.js';
 // 服务器配置
 const SERVER_NAME = 'claude-pty-mcp';
 const SERVER_VERSION = '0.1.0';
@@ -9,7 +10,7 @@ const SERVER_VERSION = '0.1.0';
  */
 async function main() {
     // 创建MCP服务器实例
-    const server = new Server({
+    const server = new McpServer({
         name: SERVER_NAME,
         version: SERVER_VERSION,
     }, {
@@ -17,9 +18,8 @@ async function main() {
             tools: {},
         },
     });
-    // TODO: 注册工具 (T9将在此处集成)
-    // import { registerTools } from './tools/index.js';
-    // registerTools(server);
+    // 注册所有PTY工具
+    registerTools(server);
     // 创建stdio传输层
     const transport = new StdioServerTransport();
     // 连接服务器到传输层

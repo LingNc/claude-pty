@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { manager } from '../pty/manager.js';
+import { manager } from '../shared/manager.js';
 import type { PTYSessionInfo } from '../pty/types.js';
 
 function formatSessionInfo(session: PTYSessionInfo): string[] {
