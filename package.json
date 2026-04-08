@@ -4,6 +4,13 @@
   "description": "PTY terminal integration for Claude Code",
   "type": "module",
   "main": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./mcp": "./mcp/dist/server.js"
+  },
+  "bin": {
+    "claude-pty-mcp": "./mcp/dist/server.js"
+  },
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
