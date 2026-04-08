@@ -1,0 +1,27 @@
+{
+  "name": "claude-pty-mcp",
+  "version": "0.1.0",
+  "description": "MCP Server for PTY terminal integration",
+  "type": "module",
+  "main": "dist/server.js",
+  "bin": {
+    "claude-pty-mcp": "dist/server.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/server.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "bun-pty": "^0.4.8",
+    "zod": "^3.22.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
