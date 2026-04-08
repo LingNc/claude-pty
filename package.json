@@ -1,6 +1,6 @@
 {
   "name": "claude-pty",
-  "version": "0.3.4",
+  "version": "0.4.0",
   "description": "PTY terminal integration for Claude Code",
   "type": "module",
   "main": "dist/index.js",
