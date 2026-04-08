@@ -3,14 +3,14 @@
   "owner": { "name": "LingNc" },
   "metadata": {
     "description": "PTY终端集成插件",
-    "version": "0.3.4"
+    "version": "0.4.0"
   },
   "plugins": [
     {
       "name": "claude-pty",
       "source": "./claude-pty",
       "description": "PTY终端集成插件 for Claude Code",
-      "version": "0.3.4"
+      "version": "0.4.0"
     }
   ]
 }

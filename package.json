@@ -1,15 +1,33 @@
 {
   "name": "claude-pty",
-  "version": "0.3.4",
+  "version": "0.4.0",
   "description": "PTY terminal integration for Claude Code",
   "type": "module",
   "main": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./mcp": "./mcp/dist/server.js"
+  },
+  "files": [
+    "dist/",
+    "mcp/dist/",
+    "mcp/package.json",
+    "mcp/README.md",
+    ".claude-plugin/",
+    "README.md"
+  ],
+  "bin": {
+    "claude-pty-mcp": "./mcp/dist/server.js"
+  },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && npm run build:mcp",
+    "build:mcp": "cd mcp && npm run build",
     "dev": "tsc --watch",
+    "dev:mcp": "cd mcp && npm run dev",
     "test": "jest",
     "test:integration": "bun test test/integration",
-    "test:e2e": "bun playwright test e2e/e2e"
+    "test:e2e": "bun playwright test e2e/e2e",
+    "test:mcp": "cd mcp && npm test"
   },
   "dependencies": {
     "@xterm/addon-fit": "^0.11.0",

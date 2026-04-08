@@ -1,5 +1,6 @@
 import { spawn, type IPty, Terminal } from 'bun-pty'
-import { version as bunPtyVersion } from 'bun-pty/package.json'
+import bunPtyPackage from 'bun-pty/package.json' with { type: 'json' }
+const bunPtyVersion = (bunPtyPackage as { version: string }).version
 import { RingBuffer } from './buffer.js'
 import type { PTYSession, PTYSessionInfo, SpawnOptions } from './types.js'
 
@@ -124,7 +125,7 @@ export class SessionLifecycleManager {
       onData(session, data)
     })
 
-    session.process?.onExit(({ exitCode, signal }) => {
+    session.process?.onExit(({ exitCode, signal }: { exitCode: number | null; signal?: number | string }) => {
       // Flush any remaining incomplete line in the buffer
       session.buffer.flush()
 
@@ -133,7 +134,7 @@ export class SessionLifecycleManager {
       } else {
         session.status = 'exited'
       }
-      session.exitCode = exitCode
+      session.exitCode = exitCode ?? undefined
       session.exitSignal = signal
       onExit(session, exitCode)
     })

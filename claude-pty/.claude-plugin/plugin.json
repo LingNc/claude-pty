@@ -1,6 +1,6 @@
 {
   "name": "claude-pty",
-  "version": "0.3.4",
+  "version": "0.4.0",
   "description": "PTY终端集成插件 - 提供spawn/read/write/kill/list等终端操作",
   "license": "MIT",
   "keywords": ["pty", "terminal", "shell"],
